@@ -1,0 +1,2 @@
+raw_rows,clean_rows,invalid_date_rows_in_raw,exact_duplicate_rows_in_cleaned_data,missing_department,negative_counts,missing_counts
+52343,52343,0,1352,0,0,0

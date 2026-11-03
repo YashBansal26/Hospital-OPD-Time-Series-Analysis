@@ -1,0 +1,8 @@
+series,selected_model_by_AIC,AIC
+TOTAL,Holt_Winters,1592.7446460677072
+Cardiology,Holt_Winters,1033.2700940365694
+Dermatology,Holt_Winters,949.8236011438493
+General Medicine,Holt_Winters,934.633175703428
+Neurology,Holt_Winters,917.112931854146
+Orthopedics,Holt_Winters,990.4287477556833
+Pediatrics,Holt_Winters,955.959513703559
