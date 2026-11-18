@@ -1,44 +1,57 @@
 ﻿# Hospital OPD Time Series Analysis
 
-This project analyzes historical outpatient department (OPD) demand and compares time-series forecasting models. The teacher-facing deliverable is the Jupyter notebook; the CSV in `data/` is required to run it.
+This project forecasts hospital outpatient department (OPD) demand and compares classical, machine-learning and deep-learning time-series models. The main deliverable is the Jupyter notebook; `data/opd_data.csv` is required to run it.
 
 ## Project contents
 
-- `Hospital_OPD_Time_Series_Analysis.ipynb` — complete analysis, model comparison, plots, forecasts, and interpretation prompts.
-- `data/opd_data.csv` — source dataset used by the notebook.
-- `outputs/` — created by the notebook when it is run; contains plots, tables, and forecast files.
+- `Hospital_OPD_Time_Series_Analysis.ipynb`: the complete analysis. It covers data cleaning, EDA, stationarity tests, AIC-based parameter selection, model comparison, forecasts and interpretation.
+- `data/opd_data.csv`: the source dataset.
+- `outputs/`: plots, tables and forecast files. The notebook creates this folder when it runs.
+- `presentations/Hospital_OPD_Time_Series_Analysis_Final.pptx`: the final presentation.
+- `report/Hospital_OPD_Final_Report.docx`: the final project report.
+
+## Setup
+
+Python 3.10 or later is recommended. Install the packages:
+
+```bash
+pip install pandas numpy matplotlib seaborn scipy scikit-learn statsmodels
+pip install prophet xgboost torch darts pytorch-lightning autots tsfresh arch
+```
+
+The second line installs the advanced and supplemental libraries. If any of them is missing, its cell prints an install message and skips that model instead of stopping the notebook.
 
 ## Run the notebook
 
-1. Install Python and Jupyter Notebook or JupyterLab.
-2. Install the core packages:
+1. Open a terminal in this project folder and start Jupyter with `jupyter notebook`.
+2. Open `Hospital_OPD_Time_Series_Analysis.ipynb`.
+3. Choose **Run All**.
 
-   ```bash
-   pip install pandas numpy matplotlib seaborn scipy scikit-learn statsmodels
-   ```
+A full run takes about 10–15 minutes on a laptop CPU. AutoTS and the Temporal Fusion Transformer take the longest.
 
-3. Open a terminal in this project folder and start Jupyter:
+## What the notebook covers
 
-   ```bash
-   jupyter notebook
-   ```
+| Requirement | Where |
+|---|---|
+| EDA, cleaning, decomposition | Sections 3–7 |
+| Hourly series (3,650 observations, at least the 500 required) | Sections 5b and 10b |
+| Stationarity (ADF/KPSS, ACF/PACF) | Section 8 |
+| Parameter selection and justification (AIC, training data only) | Section 9b |
+| AR, MA, ARMA, ARIMA, SARIMA, Holt-Winters, ARIMAX | Section 10 |
+| Model assumption checks (Ljung-Box, residual diagnostics) | Section 10a |
+| VAR / VARIMA (departments) | Section 11 |
+| 30-day forecast | Section 12 |
+| TSFresh, Prophet, Darts, AutoTS (all scored on the common holdout) | Sections 13–14 |
+| XGBoost, LSTM, GRU, Temporal Fusion Transformer (tuned) | Section 14 |
+| ARCH/GARCH volatility test | Section 14b |
+| Final comparison table, plots and insights | Section 15 |
+| Residual diagnostics and run report | Sections 16–17 |
 
-4. Open `Hospital_OPD_Time_Series_Analysis.ipynb` and choose **Run All**.
+## Evaluation and assumptions
 
-The notebook expects `data/opd_data.csv` relative to the project folder. Run cells from top to bottom.
-
-## Analysis and deliverables
-
-The notebook covers data cleaning and quality checks, daily aggregation, EDA, stationarity checks, and chronological holdout evaluation using MAE, RMSE, and MAPE. It compares naive baselines with AR, MA, ARMA, ARIMA, SARIMA, Holt-Winters, and holiday-based ARIMAX. It also includes department-level VAR and VARIMA workflows, a 30-day forecast, and a domain interpretation section.
-
-The supplemental requirements are addressed with TSFresh feature extraction, Prophet, Darts, and AutoTS. TSFresh, Prophet, and Darts run only when their packages are available. AutoTS is included as a separate automatic model search. Optional package installation instructions appear in the relevant notebook cells.
-
-## Dataset and assumptions
-
-The supplied dataset contains 52,343 rows covering 2024-04-19 through 2025-04-18, across six departments. `patient_count` is summed by date and department, creating 365 daily observations. Dates with no records are treated as zero visits; confirm this assumption against the data source. Exact duplicate rows are reported for review and are not deleted automatically.
-
-The last 20% of dates form the test period. Model forecasts are compared on this chronological holdout. The holiday flag is used as an external regressor for ARIMAX during historical holdout evaluation; it is not assumed to be available for the separate future forecast.
-
-## Presentation reminder
-
-Before presenting, run all notebook cells and review the generated metrics and plots. Complete the interpretation prompts using the actual run results. If VAR or VARIMA reports a fitting/convergence failure, state that clearly rather than presenting it as a successful result.
+- The data covers 2024-04-19 to 2025-04-18 for six departments. `patient_count` is summed into 365 daily totals and 3,650 clinic-hour totals.
+- Every model is scored on the same holdout: the last 20% of dates (73 days), using MAE, RMSE and MAPE.
+- Model orders and hyper-parameters are chosen using training data only.
+- The `is_holiday` flag is identical to Sunday. ARIMAX therefore uses weekday dummy variables instead.
+- Dates with no records would be treated as zero visits; this dataset has no missing dates.
+- Exact duplicate rows are flagged but not deleted.
